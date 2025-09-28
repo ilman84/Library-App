@@ -74,6 +74,8 @@ export default function Home() {
       { id: 5, name: 'Technology' },
       { id: 6, name: 'Education' },
       { id: 7, name: 'Self-Improvement' },
+      { id: 8, name: 'Non-Fiction' },
+      { id: 9, name: 'Finance' },
     ],
     []
   );
@@ -127,19 +129,75 @@ export default function Home() {
 
   // Function to get category image based on category name
   const getCategoryImage = (categoryName: string) => {
+    // Debug: log the category name being processed
+    console.log(
+      '🔍 Processing category:',
+      categoryName,
+      'Type:',
+      typeof categoryName
+    );
+
     const imageMap: { [key: string]: string } = {
+      // Fiction categories
       'Fiction Updated': '/images/fiction.png',
-      Fiction: '/images/fiction.png', // Fallback for Fiction
+      Fiction: '/images/fiction.png',
+
+      // Science & Technology categories
       'Sci-Fi': '/images/science.png',
-      Business: '/images/finance.png',
-      'Self-Help': '/images/nonfiction.png',
+      'Science Fiction': '/images/science.png',
+      Science: '/images/science.png',
       Technology: '/images/science.png',
-      'Mystery & Thriller': '/images/nonfiction.png', // Use nonfiction icon for mystery
-      string: '/images/default-category.png', // Invalid category name
+
+      // Business & Finance categories
+      Business: '/images/finance.png',
+      Finance: '/images/finance.png',
+      'Personal Finance': '/images/finance.png',
+      Economics: '/images/finance.png',
+
+      // Non-Fiction categories
+      'Self-Help': '/images/nonfiction.png',
+      'Non-Fiction': 'bg-[url(/images/nonfiction.png)] ',
+      'Non Fiction': 'bg-[url(/images/nonfiction.png)] ',
+      'non-fiction': 'bg-[url(/images/nonfiction.png)] ',
+      'non fiction': 'bg-[url(/images/nonfiction.png)] ',
+      nonfiction: 'bg-[url(/images/nonfiction.png)] ',
+      Nonfiction: 'bg-[url(/images/nonfiction.png)] ',
+      'Mystery & Thriller': '/images/nonfiction.png',
+      Mystery: '/images/nonfiction.png',
+      Thriller: '/images/nonfiction.png',
+      History: '/images/nonfiction.png',
+      Biography: '/images/nonfiction.png',
+      Health: '/images/nonfiction.png',
+      Art: '/images/nonfiction.png',
+      Philosophy: '/images/nonfiction.png',
+      Religion: '/images/nonfiction.png',
+      Travel: '/images/nonfiction.png',
+      Cooking: '/images/nonfiction.png',
+      Sports: '/images/nonfiction.png',
+      Music: '/images/nonfiction.png',
+      Poetry: '/images/nonfiction.png',
+      Drama: '/images/nonfiction.png',
+      Horror: '/images/nonfiction.png',
+
+      // Education categories
       Education: '/images/education.png',
       'Self-Improvement': '/images/Self-Improvement.png',
+      'Self Improvement': '/images/Self-Improvement.png',
+      Children: '/images/education.png',
+
+      // Other fiction categories
+      Romance: '/images/fiction.png',
+      Fantasy: '/images/fiction.png',
+      Adventure: '/images/fiction.png',
+      'Young Adult': '/images/fiction.png',
+
+      // Invalid category name
+      string: '/images/default-category.png',
     };
-    return imageMap[categoryName] || '/images/default-category.png';
+
+    const result = imageMap[categoryName] || '/images/default-category.png';
+    console.log('🎯 Category mapping result:', categoryName, '→', result);
+    return result;
   };
 
   // Debug logging
