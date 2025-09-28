@@ -105,8 +105,8 @@ export class ApiClient {
           messageFromJson || `HTTP ${response.status} ${response.statusText}`;
 
         // Add status code to error message for better error handling
-        const error = new Error(baseMessage);
-        (error as any).status = response.status;
+        const error = new Error(baseMessage) as Error & { status?: number };
+        error.status = response.status;
         throw error;
       }
 
