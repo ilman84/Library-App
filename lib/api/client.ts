@@ -101,10 +101,9 @@ export class ApiClient {
           parsed && typeof parsed === 'object'
             ? parsed.message || parsed.error || null
             : null;
-        const textSnippet = rawText.slice(0, 300);
         const baseMessage =
           messageFromJson || `HTTP ${response.status} ${response.statusText}`;
-        throw new Error(`${baseMessage}. URL: ${url}. Body: ${textSnippet}`);
+        throw new Error(baseMessage);
       }
 
       // Successful but non-JSON body

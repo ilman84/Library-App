@@ -3,7 +3,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode, useState } from 'react';
 import { AuthProvider } from '@/contexts/AuthContext';
-import { Toaster } from '@/components/ui/sonner';
 import ReduxProvider from '@/store/ReduxProvider';
 
 export default function Providers({ children }: { children: ReactNode }) {
@@ -42,10 +41,7 @@ export default function Providers({ children }: { children: ReactNode }) {
   return (
     <ReduxProvider>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          {children}
-          <Toaster />
-        </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
       </QueryClientProvider>
     </ReduxProvider>
   );

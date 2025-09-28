@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { loansApi } from '../../lib/api/loans';
 import { CreateLoanRequest } from '../../lib/api/config';
-import { toast } from 'sonner';
 
 // Hook for creating a loan
 export const useCreateLoan = () => {
@@ -13,12 +12,11 @@ export const useCreateLoan = () => {
       // Invalidate and refetch loans data
       queryClient.invalidateQueries({ queryKey: ['me', 'loans'] });
       queryClient.invalidateQueries({ queryKey: ['loans'] });
-      toast.success('Book borrowed successfully!');
+      // Don't show success toast here - let the calling component handle it
     },
     onError: (error) => {
-      const message =
-        error instanceof Error ? error.message : 'Failed to borrow book';
-      toast.error(message);
+      // Don't show error toast here - let the calling component handle it
+      console.error('Loan creation error:', error);
     },
   });
 };

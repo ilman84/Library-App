@@ -10,6 +10,7 @@ import { loadCartFromStorage, addToCart } from '@/store/slices/cartSlice';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCreateLoan } from '../../../hooks/api/useLoans';
 import { useBooks } from '../../../hooks/api/useBooks';
+import { toast } from 'sonner';
 
 function CartBooks() {
   const { items } = useAppSelector((state) => state.cart);
@@ -199,12 +200,12 @@ export default function CheckoutPage() {
     console.log('===================');
 
     if (!canBorrow) {
-      alert('Please accept all agreements to continue.');
+      toast.error('Please accept all agreements to continue.');
       return;
     }
 
     if (items.length === 0) {
-      alert('No books in cart to borrow.');
+      toast.error('No books in cart to borrow.');
       return;
     }
 
@@ -232,6 +233,13 @@ export default function CheckoutPage() {
 
       console.log('All loans created successfully!');
 
+      // Show success toast
+      toast.success('Books borrowed successfully!', {
+        description: `You have successfully borrowed ${items.length} book${
+          items.length > 1 ? 's' : ''
+        }.`,
+      });
+
       // Clear cart after successful borrowing
       dispatch({ type: 'cart/clearCart' });
 
@@ -241,7 +249,29 @@ export default function CheckoutPage() {
       window.location.href = `/success-borrow?id=${firstBookId}`;
     } catch (error) {
       console.error('Error creating loans:', error);
-      alert('Failed to borrow books. Please try again.');
+
+      // Handle specific error messages
+      if (error instanceof Error) {
+        if (
+          error.message.includes(
+            'already borrowed this book and not returned yet'
+          )
+        ) {
+          toast.error(
+            'You have already borrowed this book and not returned it yet. Please return it first before borrowing again.'
+          );
+        } else if (error.message.includes('not available')) {
+          toast.error('This book is currently not available for borrowing.');
+        } else if (error.message.includes('exceeded maximum')) {
+          toast.error(
+            'You have exceeded the maximum number of books you can borrow.'
+          );
+        } else {
+          toast.error(`Failed to borrow books: ${error.message}`);
+        }
+      } else {
+        toast.error('Failed to borrow books. Please try again.');
+      }
     }
   };
 
