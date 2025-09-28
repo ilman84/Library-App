@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ReviewModal from '@/app/components/ReviewModal';
 import { useAuth } from '@/contexts/AuthContext';
@@ -17,7 +17,7 @@ import {
 } from '../../../hooks/api/useMe';
 import { apiClient } from '../../../lib/api/client';
 
-export default function ProfilePage() {
+function ProfilePageContent() {
   const { user } = useAuth();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState('Profile');
@@ -1151,5 +1151,13 @@ export default function ProfilePage() {
       {/* Footer */}
       <Footer />
     </div>
+  );
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProfilePageContent />
+    </Suspense>
   );
 }

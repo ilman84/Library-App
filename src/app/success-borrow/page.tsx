@@ -3,10 +3,10 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { booksApi } from '@/lib/api';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Image from 'next/image';
 
-export default function SuccessBorrowPage() {
+function SuccessBorrowPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const bookId = searchParams.get('id');
@@ -125,5 +125,13 @@ export default function SuccessBorrowPage() {
         See Borrowed List
       </button>
     </div>
+  );
+}
+
+export default function SuccessBorrowPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SuccessBorrowPageContent />
+    </Suspense>
   );
 }

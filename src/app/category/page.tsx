@@ -2,7 +2,7 @@
 
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useBooks } from '../../../hooks/api/useBooks';
 import BookCard from '@/app/components/BookCard';
@@ -15,7 +15,7 @@ interface LocalBook {
   image?: string;
 }
 
-export default function CategoryPage() {
+function CategoryPageContent() {
   const [showFilters, setShowFilters] = useState(false);
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('search') || '';
@@ -293,5 +293,13 @@ export default function CategoryPage() {
       {/* Footer */}
       <Footer />
     </div>
+  );
+}
+
+export default function CategoryPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CategoryPageContent />
+    </Suspense>
   );
 }
