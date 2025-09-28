@@ -28,37 +28,66 @@ export default function PopularAuthorsDesktop() {
 
   const authors = authorsData?.data?.authors || [];
 
+  console.log('🖥️ Raw API authors data:', authors);
+
   // Fallback authors if API data is not available
+  // Using only authors that we know exist in the database
   const fallbackAuthors = [
-    { id: 1, name: 'Andrea Hirata', bio: 'Penulis Indonesia' },
-    { id: 2, name: 'Yuval Noah Harari', bio: 'Historian & Author' },
-    { id: 4, name: 'J. K. Rowling', bio: 'Author of Harry Potter series' },
+    {
+      id: 1,
+      name: 'Andrea Hirata',
+      bio: 'Penulis Indonesia terkenal dengan novel Laskar Pelangi',
+    },
+    {
+      id: 4,
+      name: 'J. K. Rowling',
+      bio: 'Joanne Rowling, lahir 31 Juli 1965), dikenal dengan nama pena J. K. Rowling, adalah seorang penulis, filantropis, produser film, dan penulis skenario Inggris. Dia adalah penulis seri Harry Potter, yang telah memenangkan banyak penghargaan dan terjual lebih dari 500 juta salinan pada tahun 2018,[2] dan pada 2008 menjadi seri buku anak-anak terlaris dalam sejarah.[3] Buku-buku tersebut menjadi landasan diproduksinya seri film populer. Rowling juga menulis fiksi kriminal dengan nama pena Robert Galbraith.',
+    },
     {
       id: 9,
       name: 'Agatha Christie',
       bio: 'English writer known for her detective novels',
     },
+    {
+      id: 15,
+      name: 'Carl Sagan',
+      bio: 'Carl Edward Sagan (November 9, 1934 – December 20, 1996) was an American astronomer and a noted advocate for science. He pioneered the discipline of exobiology and initiated the Search for Extraterrestrial Intelligence (SETI). He is known worldwide for his work and thoughts on the universe.',
+    },
   ];
 
   // Use API data if available, otherwise use fallback
   const availableAuthors = authors.length > 0 ? authors : fallbackAuthors;
+  
+  console.log('🖥️ Available authors (API or fallback):', availableAuthors);
 
   // Prioritize known good authors, then filter others
   // Known authors with their IDs to prioritize
   const knownGoodAuthors = [
-    { name: 'J. K. Rowling', id: 4 },
     { name: 'Andrea Hirata', id: 1 },
-    { name: 'Yuval Noah Harari', id: 2 },
+    { name: 'J. K. Rowling', id: 4 },
     { name: 'Agatha Christie', id: 9 },
+    { name: 'Carl Sagan', id: 15 },
   ];
 
-  const prioritizedAuthors = availableAuthors
-    .filter(
-      (author) =>
-        !author.name?.toLowerCase().includes('admin') &&
-        author.name.length > 2 && // Filter out very short names
-        !author.name?.toLowerCase().includes('test') // Filter out test names
-    )
+  // First, prioritize known good authors
+  const knownAuthors = knownGoodAuthors.map(known => {
+    const found = availableAuthors.find(author => 
+      author.id === known.id || author.name === known.name
+    );
+    return found || known;
+  });
+
+  // Then add other authors that are not in known list
+  const otherAuthors = availableAuthors.filter(author => 
+    !knownGoodAuthors.some(known => 
+      known.id === author.id || known.name === author.name
+    ) &&
+    !author.name?.toLowerCase().includes('admin') &&
+    author.name.length > 2 &&
+    !author.name?.toLowerCase().includes('test')
+  );
+
+  const prioritizedAuthors = [...knownAuthors, ...otherAuthors]
     .filter(
       (author, index, self) =>
         // Remove duplicates by name (case-insensitive)
@@ -66,19 +95,7 @@ export default function PopularAuthorsDesktop() {
         self.findIndex(
           (a) => a.name?.toLowerCase() === author.name?.toLowerCase()
         )
-    )
-    .sort((a, b) => {
-      // Prioritize known good authors by ID and name
-      const aIsKnown = knownGoodAuthors.some(
-        (known) => known.id === a.id || known.name === a.name
-      );
-      const bIsKnown = knownGoodAuthors.some(
-        (known) => known.id === b.id || known.name === b.name
-      );
-      if (aIsKnown && !bIsKnown) return -1;
-      if (!aIsKnown && bIsKnown) return 1;
-      return 0;
-    });
+    );
 
   const popularAuthors = prioritizedAuthors.slice(0, 4);
 
@@ -237,7 +254,10 @@ export default function PopularAuthorsDesktop() {
       {displayAuthors.map((author) => (
         <div
           key={author.id}
-          onClick={() => router.push(`/author?id=${author.id}`)}
+          onClick={() => {
+            console.log('Clicking author:', author.name, 'ID:', author.id);
+            router.push(`/author?id=${author.id}`);
+          }}
           className='flex pt-[12px] pr-[12px] pb-[12px] pl-[12px] gap-[12px] items-center bg-[#fff] rounded-[12px] shadow-[0_0_20px_0_rgba(202,201,201,0.25)] hover:shadow-[0_0_30px_0_rgba(202,201,201,0.4)] transition-shadow cursor-pointer'
         >
           <div className='w-[60px] h-[60px] bg-[url(/images/foto-profile.png)] bg-cover bg-no-repeat rounded-[50%]' />

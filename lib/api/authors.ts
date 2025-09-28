@@ -4,6 +4,7 @@ import {
   AuthorsResponse,
   CreateAuthorRequest,
   UpdateAuthorRequest,
+  Book,
 } from './config';
 
 // Authors API endpoints
@@ -18,8 +19,9 @@ export const authorsApi = {
     return apiClient.get<AuthorsResponse>('/authors', otherParams);
   },
 
-  // Get author by ID
-  getById: (id: number) => apiClient.get<Author>(`/authors/${id}`),
+  // Get author by ID with books
+  getById: (id: number) =>
+    apiClient.get<{ author: Author; books: Book[] }>(`/authors/${id}/books`),
 
   // Create new author
   create: (data: CreateAuthorRequest) =>

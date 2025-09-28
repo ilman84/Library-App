@@ -103,7 +103,11 @@ export class ApiClient {
             : null;
         const baseMessage =
           messageFromJson || `HTTP ${response.status} ${response.statusText}`;
-        throw new Error(baseMessage);
+
+        // Add status code to error message for better error handling
+        const error = new Error(baseMessage);
+        (error as any).status = response.status;
+        throw error;
       }
 
       // Successful but non-JSON body
